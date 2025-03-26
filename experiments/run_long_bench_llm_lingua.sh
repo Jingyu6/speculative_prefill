@@ -1,10 +1,10 @@
 cd ./eval/long_bench
 
-for rate in 0.3; do
+for rate in 0.1 0.3 0.7 0.9; do
     python pred_vllm.py \
-        --model "meta-llama/Meta-Llama-3.1-70B-Instruct" \
-        --llm_lingua \
-        --llm_lingua_rate $rate \
+        --model "/data/data_persistent1/jingyu/llama_70b" \
+        --llm-lingua \
+        --llm-lingua-rate $rate \
         --tensor-parallel-size 8 \
         --exp llm_lingua_${rate}
 

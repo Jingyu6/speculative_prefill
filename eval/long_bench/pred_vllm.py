@@ -28,7 +28,7 @@ def parse_args(args=None):
 
     # Other baselines
     parser.add_argument('--llm-lingua', action='store_true', help="Whether to use LLMLingua")
-    parser.add_argument('--llm-lingua-model', type=str, default="microsoft/llmlingua-2-bert-base-multilingual-cased-meetingbank", help="LLMLingua model name.")
+    parser.add_argument('--llm-lingua-model', type=str, default="microsoft/llmlingua-2-xlm-roberta-large-meetingbank", help="LLMLingua model name.")
     parser.add_argument('--llm-lingua-rate', type=float, default=0.33, help="LLMLingua compression rate.")
 
     # vLLM args
