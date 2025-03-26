@@ -65,13 +65,15 @@ def get_predictions(
     for json_obj in tqdm(data):
         if no_8k and json_obj["length"] >= 8000:
             continue
-        prompt = prompt_format.format(**json_obj)
         if LLM_LINGUA is not None:
-            prompt = LLM_LINGUA.compress_prompt(
-                prompt, 
+            # reference: https://github.com/microsoft/LLMLingua/blob/main/examples/LLMLingua2.ipynb
+            json_obj["context"] = LLM_LINGUA.compress_prompt(
+                json_obj["context"], 
                 rate=LLM_LINGUA_RATE, 
-                force_tokens=['\n', '?']
+                force_tokens=["!", ".", '\n', '?'], 
+                drop_consecutive=True
             )
+        prompt = prompt_format.format(**json_obj)
         if dataset_name in ["trec", "triviaqa", "samsum", "lsht", "lcc", "repobench-p"]:
             # no template
             outputs = model.generate(
