@@ -10,6 +10,10 @@ import torch.distributed as dist
 from datasets import load_dataset
 from tqdm import tqdm
 
+# LLM Lingua params
+LLM_LINGUA = None
+LLM_LINGUA_RATE = None
+
 
 def parse_args(args=None):
     parser = argparse.ArgumentParser()
@@ -22,11 +26,19 @@ def parse_args(args=None):
     parser.add_argument('--e', action='store_true', help="Evaluate on LongBench-E. ")
     parser.add_argument('--no-8k', action='store_true', help="Exclude >8k samples. ")
 
+    # Other baselines
+    parser.add_argument('--llm-lingua', action='store_true', help="Whether to use LLMLingua")
+    parser.add_argument('--llm-lingua-model', type=str, default="microsoft/llmlingua-2-bert-base-multilingual-cased-meetingbank", help="LLMLingua model name.")
+    parser.add_argument('--llm-lingua-rate', type=float, default=0.33, help="LLMLingua compression rate.")
+
     # vLLM args
     parser.add_argument('--tensor-parallel-size', type=int, default=1)
     parser.add_argument('--gpu-memory-utilization', type=float, default=0.8)
     
-    return parser.parse_args(args)
+    args = parser.parse_args(args)
+    assert sum([args.spec_prefill, args.llm_lingua]) <= 1, \
+        "Only one special algorithm is allowed to be active."
+    return args
 
 
 def seed_everything(seed):
@@ -54,6 +66,12 @@ def get_predictions(
         if no_8k and json_obj["length"] >= 8000:
             continue
         prompt = prompt_format.format(**json_obj)
+        if LLM_LINGUA is not None:
+            prompt = LLM_LINGUA.compress_prompt(
+                prompt, 
+                rate=LLM_LINGUA_RATE, 
+                force_tokens=['\n', '?']
+            )
         if dataset_name in ["trec", "triviaqa", "samsum", "lsht", "lcc", "repobench-p"]:
             # no template
             outputs = model.generate(
@@ -114,6 +132,18 @@ if __name__ == "__main__":
         disable_custom_all_reduce=args.disable_custom_all_reduce, 
         cpu_offload_gb=args.cpu_offload_gb, 
     )
+
+    if args.llm_lingua:
+        try:
+            from llmlingua import PromptCompressor
+        except:
+            raise ImportError("Please install LLMLingua from https://github.com/microsoft/LLMLingua") 
+        LLM_LINGUA = PromptCompressor(
+            model_name=args.llm_lingua_model,
+            use_llmlingua2=True, # Whether to use llmlingua-2
+        )
+
+        LLM_LINGUA_RATE = args.llm_lingua_rate
 
     # build dataset
     if args.e:
