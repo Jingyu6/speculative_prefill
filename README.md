@@ -61,6 +61,17 @@ llm = LLM(
 ```
 
 ## Evaluation
+
+### Model Downloading
+To download large models, we recommend using
+```bash
+HF_HUB_ENABLE_HF_TRANSFER=1 huggingface-cli download \
+    $MODEL_NAME \
+    --local-dir $SAVE_DIR \
+    --local-dir-use-symlinks False
+```
+
+### Experiment Reproduction
 To reproduce the results from the paper, we include scripts in `experiments`. Please clone the repository that contains experiment scripts. 
 
 Before running these scripts, be sure to setup some configurations: 
@@ -74,7 +85,9 @@ bash experiments/run_{task_of_interest}.sh
 
 All results will be saved in a local folder called `local`. 
 
-(For another baseline RAG experiments, please checkout branch `rag_baseline`)
+### Baselines
+- RAG: one baseline is in the main branch. For another baseline RAG experiments, please checkout branch `rag_baseline`.
+- LLMLingua: please run `pip3 install llmlingua` before running the script. 
 
 ## WIP and Contributing
 We welcome everyone to try and contribute to the code! Here're some planned TODOs
