@@ -3,6 +3,7 @@ import json
 import os
 import random
 import sys
+from types import MethodType
 
 import numpy as np
 import torch
@@ -31,12 +32,14 @@ def parse_args(args=None):
     parser.add_argument('--llm-lingua-model', type=str, default="microsoft/llmlingua-2-xlm-roberta-large-meetingbank", help="LLMLingua model name.")
     parser.add_argument('--llm-lingua-rate', type=float, default=0.33, help="LLMLingua compression rate.")
 
+    parser.add_argument('--minference', action='store_true', help="Whether to use Minference")
+
     # vLLM args
     parser.add_argument('--tensor-parallel-size', type=int, default=1)
     parser.add_argument('--gpu-memory-utilization', type=float, default=0.8)
     
     args = parser.parse_args(args)
-    assert sum([args.spec_prefill, args.llm_lingua]) <= 1, \
+    assert sum([args.spec_prefill, args.llm_lingua, args.minference]) <= 1, \
         "Only one special algorithm is allowed to be active."
     return args
 
@@ -134,6 +137,26 @@ if __name__ == "__main__":
         disable_custom_all_reduce=args.disable_custom_all_reduce, 
         cpu_offload_gb=args.cpu_offload_gb, 
     )
+
+    if args.minference:
+        try:
+            from minference import MInference
+        except:
+            raise ImportError("Please install LLMLingua from https://github.com/microsoft/MInference")
+        
+        if args.tensor_parallel_size > 1:
+            print("Applying minference patch on vllm.")
+            from minference_vllm_patch import (minference_patch_vllm_executor,
+                                               minference_patch_vllm_tp)
+            model.minference_patch_vllm_executor = MethodType(
+                minference_patch_vllm_executor, model
+            )
+            model.minference_patch_vllm_tp = MethodType(
+                minference_patch_vllm_tp, model
+            )
+
+        minference_patch = MInference("vllm", model_name)
+        model = minference_patch(model)
 
     if args.llm_lingua:
         try:
