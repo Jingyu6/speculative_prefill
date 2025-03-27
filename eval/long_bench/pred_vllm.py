@@ -155,7 +155,11 @@ if __name__ == "__main__":
                 minference_patch_vllm_tp, model
             )
 
-        minference_patch = MInference("vllm", model_name)
+        minference_patch = MInference(
+            "vllm", 
+            model_name, 
+            config_path="./minference_configs/Llama_3.1_70B_Instruct_128k_kv_out_v32_fit_o_best_pattern_v2.json", 
+        )
         model = minference_patch(model)
 
     if args.llm_lingua:
