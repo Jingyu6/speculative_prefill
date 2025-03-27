@@ -3,7 +3,6 @@ import json
 import os
 import random
 import sys
-from types import MethodType
 
 import numpy as np
 import torch
@@ -113,6 +112,7 @@ if __name__ == "__main__":
     if args.no_8k:
         assert args.e, "No 8k is only supported for e dataset. "
 
+    # Apply necessary monkey patch before importing vllm
     if args.spec_prefill:
         sys.path.append("../../")
         from speculative_prefill import enable_prefill_spec
@@ -120,6 +120,11 @@ if __name__ == "__main__":
             spec_model=args.spec_model, 
             spec_config_path='./local/config.yaml'
         )
+
+    if args.minference and args.tensor_parallel_size > 1:
+        print("Applying minference patch on vllm.")
+        from minference_vllm_patch import patch_vllm_tp
+        patch_vllm_tp()
 
     model_name = args.model
 
@@ -144,19 +149,8 @@ if __name__ == "__main__":
         except:
             raise ImportError("Please install LLMLingua from https://github.com/microsoft/MInference")
         
-        if args.tensor_parallel_size > 1:
-            print("Applying minference patch on vllm.")
-            from minference_vllm_patch import (minference_patch_vllm_executor,
-                                               minference_patch_vllm_tp)
-            model.minference_patch_vllm_executor = MethodType(
-                minference_patch_vllm_executor, model
-            )
-            model.minference_patch_vllm_tp = MethodType(
-                minference_patch_vllm_tp, model
-            )
-
         minference_patch = MInference(
-            "vllm", 
+            "vllm_minference", 
             model_name, 
             config_path="./minference_configs/Llama_3.1_70B_Instruct_128k_kv_out_v32_fit_o_best_pattern_v2.json", 
         )

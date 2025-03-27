@@ -88,7 +88,7 @@ All results will be saved in a local folder called `local`.
 ### Baselines
 - RAG: one baseline is in the main branch. For another baseline RAG experiments, please checkout branch `rag_baseline`.
 - LLMLingua: please run `pip3 install llmlingua` before running the script. 
-- MInference: please run `pip3 install minference ` before running the script. MInference has only one optimal pattern supported for Llama-3.1-70B-Instruct, so we evaluate this only and rely on the efficiency benchmark for comparing against our method fairly. We modify the benchmark script from MInference to support batch size > 1 profiling. 
+- MInference: please run `pip3 install minference vllm_flash_attn` before running the script. MInference has only one optimal pattern supported for Llama-3.1-70B-Instruct, so we evaluate this only and rely on the efficiency benchmark for comparing against our method fairly. We modify the benchmark script from MInference to support batch size > 1 profiling. 
 
 ## WIP and Contributing
 We welcome everyone to try and contribute to the code! Here're some planned TODOs
