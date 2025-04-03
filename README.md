@@ -1,10 +1,6 @@
 ![image](./figs/logo.jpg?raw=true)
 # <p align=center> Turbocharging TTFT with Lightweight and Training-Free Token Importance Estimation
 
-[![Arxiv Paper](https://img.shields.io/badge/Arxiv-Paper-brightred)](https://arxiv.org/abs/2502.02789)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
-![](https://img.shields.io/badge/PRs-welcome-brightgreen) ![](https://img.shields.io/github/stars/Jingyu6/speculative_prefill?style=social) 
-
 ## About
 _Speculative Prefill_ is a technique for accelerating LLM inference via token importance transferability. Essentially, _Speculative Prefill_ adopts a smaller, usually cheaper, LLM as a "draft" model that speculates what tokens are contextually important. Only these tokens, along with their original position information are then sent to the main model for inference. 
 
@@ -27,14 +23,12 @@ conda activate sp
 ```
 
 Install via pip:
-```bash
-pip3 install git+git://github.com/Jingyu6/speculative_prefill.git#egg=speculative_prefill
-```
+XXX
 
 To reproduce all experiments, clone the repo and install required dependencies: 
 ```bash
-git clone https://github.com/Jingyu6/speculative_prefill.git
-cd speculative_prefill
+git clone XXX
+cd XXX
 pip3 install -r requirements.txt
 ```
 
@@ -100,14 +94,4 @@ Since vLLM is updating very fast, we choose to keep this project as a monkey pat
 
 ## Citation
 If you found our work to be useful, please cite our paper: 
-```bib
-@misc{liu2025speculativeprefillturbochargingttft,
-      title={Speculative Prefill: Turbocharging TTFT with Lightweight and Training-Free Token Importance Estimation}, 
-      author={Jingyu Liu and Beidi Chen and Ce Zhang},
-      year={2025},
-      eprint={2502.02789},
-      archivePrefix={arXiv},
-      primaryClass={cs.CL},
-      url={https://arxiv.org/abs/2502.02789}, 
-}
-```
+
