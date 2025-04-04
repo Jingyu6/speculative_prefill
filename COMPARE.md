@@ -31,7 +31,7 @@ Here we want to note:
 
 We consider two cases:
 1. Realistic case: we have batch size > 1. 
-2. Constraint case: we have batch size = 1. (Implication, batch size = 1 will not accurately reflect the compute-bound nature of prefill, which happens quite often in modern inference servers)
+2. Constraint case: we have batch size = 1. (Implication, batch size = 1 will not accurately reflect the compute-bound nature of prefill. Compute-bound happens quite often in modern inference servers)
 
 #### Varying Batch size x Sequence Length
 
@@ -40,8 +40,8 @@ We consider two cases:
 | Baseline 70B | 22.640 | 23.697 | 25.885 | 30.102 | 38.712 | 55.970 |
 | Minference 70B | 46.577 | 45.292 | 42.518 | 40.802 | 38.346 | 34.562 |
 | SpecPrefill 10% 70B | 7.115 | 7.048 | 7.190 | 7.956 | 9.817 | 13.606 |
-| SpecPrefill 30% 70B 70B | 11.797 | 11.737 | 12.111 | 13.220 | 15.714 | 20.877 |
-| SpecPrefill 50% 70B 70B | 16.236 | 16.410 | 17.086 | 18.993 | 22.732 | 30.722 |
+| SpecPrefill 30% 70B | 11.797 | 11.737 | 12.111 | 13.220 | 15.714 | 20.877 |
+| SpecPrefill 50% 70B | 16.236 | 16.410 | 17.086 | 18.993 | 22.732 | 30.722 |
 | SpecPrefill 70% 70B | 21.220 | 21.452 | 22.703 | 25.554 | 31.424 | 43.438 |
 | SnapKV 8B | OOM | OOM | OOM | OOM | OOM | OOM |
 | DuoAttn 50% 8B | OOM | OOM | OOM | OOM | OOM | 45.376 |
